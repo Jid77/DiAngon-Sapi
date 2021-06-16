@@ -2,8 +2,6 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <Adafruit_INA219.h> 
-#include <MPU6050.h>
 #include <EEPROM.h>
 //const int LED =15; //D8
 const int LED =5; //D
