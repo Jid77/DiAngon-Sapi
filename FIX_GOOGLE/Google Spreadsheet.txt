@@ -1,0 +1,65 @@
+function doGet(e) { 
+  Logger.log( JSON.stringify(e) );
+  var result = '';
+  if (e.parameter == 'undefined') {
+    result = 'No Parameters';
+  }
+  else {
+    var sheet_id = '19v_erqHdVemaVdiJ_N2gTG0-JstZm4Vupm3qL7lb61A'; 	// Spreadsheet ID
+    var sheet = SpreadsheetApp.openById(sheet_id).getSheetByName('sapi_1');
+    var newRow = sheet.getLastRow() + 1;			
+    var rowData = [];
+    for (var param in e.parameter) {
+      // Logger.log('In for loop, param=' + param);
+      var value = stripQuotes(e.parameter[param]);
+      // Logger.log(param + ':' + e.parameter[param]);
+      
+      switch (param) {
+        case 'data':
+          result = 'gagal';
+          if (value.indexOf(',') >= 0){
+            JSON.stringify(value);
+            var data_banyak =  value.split(",");
+            // JSON.stringify(data_banyak);
+            for(var value in data_banyak){
+              // result = value;
+              // break;
+              // var Curr_Date = new Date();
+              // var Curr_Dates = Utilities.formatDate(Curr_Date, "Asia/Jakarta", 'yyyy-MM-dd');
+              // var Curr_Time = Utilities.formatDate(Curr_Date, "Asia/Jakarta", 'HH-mm-ss');
+              // rowData[0] = Curr_Dates+'|'+Curr_Time+'|'+data_banyak[value];
+              rowData[0] = data_banyak[value];
+              JSON.stringify(rowData);
+              var newRange = sheet.getRange(newRow, 1, 1, rowData.length);
+              newRange.setValues([rowData]);
+              newRange.splitTextToColumns('|');
+              newRow += 1;
+            }
+            result = 'ok';
+            // result = data_banyak;
+          }
+          else{
+            // var Curr_Date = new Date();
+            // var Curr_Dates = Utilities.formatDate(Curr_Date, "Asia/Jakarta", 'yyyy-MM-dd');
+            // var Curr_Time = Utilities.formatDate(Curr_Date, "Asia/Jakarta", 'HH-mm-ss');
+            // rowData[0] = Curr_Dates+'|'+Curr_Time+'|'+value;
+            rowData[0] = value;
+            Logger.log(JSON.stringify(rowData));
+            var newRange = sheet.getRange(newRow, 1, 1, rowData.length);
+            newRange.setValues([rowData]);
+            newRange.splitTextToColumns('|');
+            result = 'ok';
+          }
+          break;
+        default:
+          result = "unsupported parameter";
+      }
+    }
+    
+  }
+  return ContentService.createTextOutput(result);
+}
+
+function stripQuotes( value ) {
+  return value.replace(/^["']['"]$/g, "");
+}
